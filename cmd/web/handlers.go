@@ -20,6 +20,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 	// file in the slice.
 	files := []string {
 		"./ui/html/base.tmpl",
+		"./ui/html/partials/nav.tmpl",
 		"./ui/html/pages/home.tmpl",
 	}
 
@@ -37,7 +38,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 	// We then use the Execure() method on the template set to write the
 	// template content as the response body. The last parameter to Execute()
 	// represent any dynamic data we want to pass in, which is now we'll leave as nil.
-	err = ts.Execute(w, nil)
+	err = ts.ExecuteTemplate(w, "base", nil)
 	if err != nil {
 		log.Print(err.Error())
 		http.Error(w, "Internal Server Error", 500)
