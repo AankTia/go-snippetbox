@@ -37,18 +37,18 @@ LET'S GO! (A Step-by Step Guide to Creating Fast, Secure, And Maintanable Web Ap
 Three absolute essentials:
 
 1. **_handler_**
-   
+
    If you're comming from an MVC-backgorund, you can think of handlers as being a bit like _controllers_. They're responsible for executing application logic and for writting HTTP response headers and bodies.
 
 2. **_router_**
 
-    _servermux_ in Go Terminology. This stores a mapping between the URL patterns for your application and the corresponding handlers.
+   _servermux_ in Go Terminology. This stores a mapping between the URL patterns for your application and the corresponding handlers.
 
-    Usually you have one servermux for your application containing all your routes.
+   Usually you have one servermux for your application containing all your routes.
 
 3. **_web server_**
 
-    On eof the great things about Go is that you can establish a web server and listen for incoming requests _as part of your application self_. You don't need an external thrd-party server link Nginx or Apache.
+   On eof the great things about Go is that you can establish a web server and listen for incoming requests _as part of your application self_. You don't need an external thrd-party server link Nginx or Apache.
 
 ### Network addresses
 
@@ -58,7 +58,7 @@ Generaly, you only need to specify a host in the address if your computer has mu
 
 ### Using `go run`
 
-- During development the `go run` command is  convienient way to tru out your code. It's essentially a shortcut that compiles your code, creates an executable binary in your `/tmp` directory, and then runs this binary in one step.
+- During development the `go run` command is convienient way to tru out your code. It's essentially a shortcut that compiles your code, creates an executable binary in your `/tmp` directory, and then runs this binary in one step.
 - It accepts either a space-separated list of `.go` files, the path to a specific package (where the `.` character represents your current directory), or the full module path. For our application at the moment, the tree following command are all equivalent:
 
 ```bash
@@ -67,8 +67,48 @@ go run main.go
 go run github.com/AankTia/go-snippetbox
 ```
 
-
 ## 2.3. Routing requests
+
+### Fixed Path and Subtree Patterns
+
+Go servermux supports two different types of URL patterns:
+
+- **_fixed paths_**
+
+    _Don't end_ with trailing slash, example:
+    
+    ```
+    /snippet/view
+    /snippet/create
+    ```
+
+
+- **_subtree paths_**
+
+    _Do end_ with a traling slash, example:
+
+    ```
+    /
+    /static/
+    ```
+
+    Subtree path pattern are atched (and the corresponding handler calles) whenever the `start` of a request URL path. You can thnk of subtree paths as acting a bit like they have a wildcard at the end, like `/**` or `/static/`
+
+    This help explains why the `/` pattern is acting like a catch-all. The pattern essentially means _match a single slash, followed by anything (or nothing all)_
+
+### DefaultServeMux
+
+If you've been working with Go for a while you migh have come accross the `http.Handle()` and `http.HandleFunc()` functions. Theses allow you to register routes `without declaring a servermux`.
+
+Behind the scenes, tehese functions register their routes with something called the _DefaultServeMux_. Initialized by default and stored in `net/http` global variable.
+
+```go
+var DefaultServeMux = NewServeMux()
+```
+
+Although this approach can make your code slightly shorter, **_don't use it for production applications_**. Because `DefaultServeMux` is a global variable, any package can access it and register a route, including any third-party packages that your application imports. Id one of those third-party packages is compromised, they could use `DefaultServeMux` to expose a malicious handler of the web.
+
+So, for the sake of sevurity, it's generally a good idea to avoid `DefaultServeMux` and the corresponding helper functions.
 
 ## 2.4. Customizing HTTP headers
 
