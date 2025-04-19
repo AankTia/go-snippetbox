@@ -115,7 +115,47 @@ So, for the sake of sevurity, it's generally a good idea to avoid `DefaultServeM
 ### `http.Error` Shortcut
 
 If you want to send a non-`200` status code and a plain text response body, then it's a good opportunity to use `http.Error` schortcut. This is a lighweight helper function which takes a given message and status code, then call the `w.WriteHeader()` and `w.Write` methods begin-the-scene for us.
+
+### System-generated headers and content sniffing
+
+When sending a response Go will automatically set three _system_generated_:
+1. `Date`
+2. `Content-Lenght`
+3. `Content-Type`
 ...
+
+### Manipulating The Header Map
+
+We use `w.Header().Set()` to ass a new header to the response header map. But there's also `Add()`, `Del()`, `Get()` and `Values()` methods that can to read and manipulate the header map.
+
+```go
+// Set a new cache-control header. If an existing "Cache-Control" header exists
+// it will be overwritten.
+w.Header().Set("Cache-Control","public, max-age=31536000")
+
+// In contrast, the Add() method appends a new "Cache-Control" header and can
+// be called multiple times.
+w.Header().Add("Cache-Control", "public")
+w.Header().Add("Cache-Control", "max-age=31536000")
+
+// Delete all values for the "Cache-Control" header.
+w.Header().Del("Cache-Control")
+
+// Retrieve the first value for the "Cache-Control" header.
+w.Header().Get("Cache-Control")
+
+// Retrieve a slice of all values for the "Cache-Control" header.
+w.Header().Values("Cache-Control")
+```
+
+### Header canonicalization
+
+The header name will be always bes canonicalized using the `textproto.CanonicalMIMEHeaderKey()` function.
+
+This converts the first letter and any letter following a hypen to upper case, and the rest of the letters to lowercase.This has the practical implementation that when calling these methods the header name is _sace-insensitive_
+
+If you nees to avoid this cannonicalization behaviour, you can edit the header name is `case-insensitive`.
+
 
 ## 2.5. URL query strings
 
