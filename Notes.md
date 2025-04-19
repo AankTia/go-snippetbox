@@ -50,6 +50,24 @@ Three absolute essentials:
 
     On eof the great things about Go is that you can establish a web server and listen for incoming requests _as part of your application self_. You don't need an external thrd-party server link Nginx or Apache.
 
+### Network addresses
+
+The TCP network address that you pass to `http.ListenAndServe()` should be in format `host:port`. If you omit the host (only the port like `:4000`) then the server will listen on all your computer's available network interface.
+
+Generaly, you only need to specify a host in the address if your computer has multiple network interface and tou want to listen on just one of them.
+
+### Using `go run`
+
+- During development the `go run` command is  convienient way to tru out your code. It's essentially a shortcut that compiles your code, creates an executable binary in your `/tmp` directory, and then runs this binary in one step.
+- It accepts either a space-separated list of `.go` files, the path to a specific package (where the `.` character represents your current directory), or the full module path. For our application at the moment, the tree following command are all equivalent:
+
+```bash
+go run .
+go run main.go
+go run github.com/AankTia/go-snippetbox
+```
+
+
 ## 2.3. Routing requests
 
 ## 2.4. Customizing HTTP headers
