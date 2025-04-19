@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"html/template"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -13,10 +15,28 @@ func home(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	}
 
-	w.Write([]byte("Hello from Snippetbox"))
+	// Use the template.ParseFiles() function to read the template file into
+	// a template set. If there's an error, we log the detailed error messages
+	// and use the http.Error() function to send a generic 500 Internal Server
+	// Error response to the user
+	ts, err := template.ParseFiles("./ui/html/pages/home.tmpl")
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(w, "Internal Server Error", 500)
+		return
+	}
+
+	// We then use the Execure() method on the template set to write the
+	// template content as the response body. The last parameter to Execute()
+	// represent any dynamic data we want to pass in, which is now we'll leave as nil.
+	err = ts.Execute(w, nil)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(w, "Internal Server Error", 500)
+	}
 }
 
-func snippetView(w http.ResponseWriter, r *http.Request)  {
+func snippetView(w http.ResponseWriter, r *http.Request) {
 	// Exact the value of the id parameter from the query string and try to
 	// convert it to an integer using strconv.Atoi() function.
 	// If it can't be converted to an integer, or the value is less tahan 1
@@ -32,8 +52,6 @@ func snippetView(w http.ResponseWriter, r *http.Request)  {
 	fmt.Fprint(w, "Display a specific snippet with ID %d...", id)
 }
 
-
-
 func snippetCreate(w http.ResponseWriter, r *http.Request) {
 	// Use r.Method to check whether the request is using POST or not.
 	if r.Method != "POST" {
@@ -47,6 +65,6 @@ func snippetCreate(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	
+
 	w.Write([]byte("Create a new snippet..."))
 }

@@ -194,9 +194,10 @@ The structure of project repository should look like this:
 1. It gives a clean speration between Go and non-Go assets. This can make things easier to manage when it comes to building and deploying your application in the future
 
 2. It scales really nicely if you want to add another executable application to your project. For example, you might want to add a CLI (Command Line Interface) to automate some administrative tasks in the future. With this sctucture, you could create this CLI application under `cmd/cli` and it will be able to import and reuse all the code you've written under the `internal` directory.
-...
 
 ## 2.7. HTML templating and inheritance
+
+...
 
 ## 2.8. Serving static files
 
