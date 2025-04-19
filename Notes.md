@@ -6,6 +6,16 @@ LET'S GO! (A Step-by Step Guide to Creating Fast, Secure, And Maintanable Web Ap
 
 ## 1.1. Prerequisites
 
+1. Go
+
+   - (Installing Go on Mac OS X)[https://golang.org/doc/install#tarball]
+   - (Installing Go on Windows)[https://golang.org/doc/install#windows]
+   - (Installing Go on Linux)[https://golang.org/doc/install#tarball]
+   - (Removing an old version of Go)[https://golang.org/doc/manage-install#uninstalling]
+
+2. (curl)[https://curl.haxx.se/]
+    Tool for working with HTTP requests and response from teminal.
+
 ---
 
 # 2. Foundations
