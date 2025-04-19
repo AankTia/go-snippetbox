@@ -75,26 +75,25 @@ Go servermux supports two different types of URL patterns:
 
 - **_fixed paths_**
 
-    _Don't end_ with trailing slash, example:
-    
-    ```
-    /snippet/view
-    /snippet/create
-    ```
+  _Don't end_ with trailing slash, example:
 
+  ```
+  /snippet/view
+  /snippet/create
+  ```
 
 - **_subtree paths_**
 
-    _Do end_ with a traling slash, example:
+  _Do end_ with a traling slash, example:
 
-    ```
-    /
-    /static/
-    ```
+  ```
+  /
+  /static/
+  ```
 
-    Subtree path pattern are atched (and the corresponding handler calles) whenever the `start` of a request URL path. You can thnk of subtree paths as acting a bit like they have a wildcard at the end, like `/**` or `/static/`
+  Subtree path pattern are atched (and the corresponding handler calles) whenever the `start` of a request URL path. You can thnk of subtree paths as acting a bit like they have a wildcard at the end, like `/**` or `/static/`
 
-    This help explains why the `/` pattern is acting like a catch-all. The pattern essentially means _match a single slash, followed by anything (or nothing all)_
+  This help explains why the `/` pattern is acting like a catch-all. The pattern essentially means _match a single slash, followed by anything (or nothing all)_
 
 ### DefaultServeMux
 
@@ -119,10 +118,11 @@ If you want to send a non-`200` status code and a plain text response body, then
 ### System-generated headers and content sniffing
 
 When sending a response Go will automatically set three _system_generated_:
+
 1. `Date`
 2. `Content-Lenght`
 3. `Content-Type`
-...
+   ...
 
 ### Manipulating The Header Map
 
@@ -156,12 +156,45 @@ This converts the first letter and any letter following a hypen to upper case, a
 
 If you nees to avoid this cannonicalization behaviour, you can edit the header name is `case-insensitive`.
 
-
 ## 2.5. URL query strings
 
 To retrive the value of the `id` parameter from URL query string, whish we can do using `r.URL.Query().Get()` method. This will always return a string value of a parameter, or the empty string `""` if no matching parameter exists.
 
 ## 2.6. Project structure and organization
+
+The structure of project repository should look like this:
+
+```
+/project-name
+    /cmd
+        /web
+            handlers.go
+            main.go
+    /internal
+    /ui
+        /html
+        /static
+    go.mod
+```
+
+- `cmd` directory
+
+    Contain the _application specific_ code for the executable applications in the project.
+
+- `internal` directory
+
+    Contain the ancillary _non-application-specific_ code used in the project. Use it to hold potentially reusable code like validation helpers and the SQL database models for the project.
+
+- `ui` directory
+
+    Contain the `user-interface assets` used by the web application. Specifically, the `ui/html` directory will contain HTML, and the `ui/static` directory will contain static files (like css and images)
+
+**Benefits using this structure**
+
+1. It gives a clean speration between Go and non-Go assets. This can make things easier to manage when it comes to building and deploying your application in the future
+
+2. It scales really nicely if you want to add another executable application to your project. For example, you might want to add a CLI (Command Line Interface) to automate some administrative tasks in the future. With this sctucture, you could create this CLI application under `cmd/cli` and it will be able to import and reuse all the code you've written under the `internal` directory.
+...
 
 ## 2.7. HTML templating and inheritance
 
