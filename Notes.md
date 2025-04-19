@@ -112,6 +112,9 @@ So, for the sake of sevurity, it's generally a good idea to avoid `DefaultServeM
 
 ## 2.4. Customizing HTTP headers
 
+## HTTP Status Code
+
+
 ## 2.5. URL query strings
 
 ## 2.6. Project structure and organization
