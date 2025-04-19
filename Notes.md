@@ -112,8 +112,10 @@ So, for the sake of sevurity, it's generally a good idea to avoid `DefaultServeM
 
 ## 2.4. Customizing HTTP headers
 
-## HTTP Status Code
+### `http.Error` Shortcut
 
+If you want to send a non-`200` status code and a plain text response body, then it's a good opportunity to use `http.Error` schortcut. This is a lighweight helper function which takes a given message and status code, then call the `w.WriteHeader()` and `w.Write` methods begin-the-scene for us.
+...
 
 ## 2.5. URL query strings
 
