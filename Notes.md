@@ -207,10 +207,13 @@ We're using the `{{define "base"}}...{{end}}` action to define a distinct `named
 >
 > If you're wondering, the dot at the end of the `{{template "title" .}}` action represents any dynamic data that you want to pass to the invoked template.
 
+## 2.8. Serving static files
 
+### `http.Fileserver` handler
+
+Go's `net/http` package ships with a build-in `http.FileServer` handler which you can use to serve files over HTTP from a specific directory
 ...
 
-## 2.8. Serving static files
 
 ## 2.9. The http.Handler interface
 
