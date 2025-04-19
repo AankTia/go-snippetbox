@@ -14,13 +14,22 @@ LET'S GO! (A Step-by Step Guide to Creating Fast, Secure, And Maintanable Web Ap
    - (Removing an old version of Go)[https://golang.org/doc/manage-install#uninstalling]
 
 2. (curl)[https://curl.haxx.se/]
-    Tool for working with HTTP requests and response from teminal.
+   Tool for working with HTTP requests and response from teminal.
 
 ---
 
 # 2. Foundations
 
 ## 2.1. Project setup and creating a module
+
+### Module
+
+- If you’re not already familiar with Go modules, you can think of a module path as basically being a canonical name or identifier for your project.
+- You can pick almost any string as your module path, but the important thing to focus on is uniqueness. To avoid potential import conflicts with other people’s projects or the standard library in the future, you want to pick a module path that is globally unique and unlikely to be used by anything else. In the Go community, acommon convention is to base your module paths on a URL that you own.
+- To create / init module, make sure that you're in the root of the directory and then run teh `go mod init` command, passing in your module path is a parameter, like do :
+  ```bash
+  go mod init github.com/AankTia/go-snippetbox
+  ```
 
 ## 2.2. Web application basics
 
