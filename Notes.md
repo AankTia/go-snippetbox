@@ -34,6 +34,22 @@ LET'S GO! (A Step-by Step Guide to Creating Fast, Secure, And Maintanable Web Ap
 
 ## 2.2. Web application basics
 
+Three absolute essentials:
+
+1. **_handler_**
+   
+   If you're comming from an MVC-backgorund, you can think of handlers as being a bit like _controllers_. They're responsible for executing application logic and for writting HTTP response headers and bodies.
+
+2. **_router_**
+
+    _servermux_ in Go Terminology. This stores a mapping between the URL patterns for your application and the corresponding handlers.
+
+    Usually you have one servermux for your application containing all your routes.
+
+3. **_web server_**
+
+    On eof the great things about Go is that you can establish a web server and listen for incoming requests _as part of your application self_. You don't need an external thrd-party server link Nginx or Apache.
+
 ## 2.3. Routing requests
 
 ## 2.4. Customizing HTTP headers
