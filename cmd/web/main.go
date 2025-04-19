@@ -12,6 +12,13 @@ func main() {
 	// The value of the flag will be stored in the addr variable at runtime.
 	addr := flag.String("addr", ":4000", "HTTP network address")
 
+	// Importantly, we use the flag.Parse() function to parse the command-line-flag.
+	// This reads in the command-line flag value and assigns it to the addr valiable.
+	// You need to call this *before* you use the addr variable otherwise it will always
+	// contain the default value of ":4000". If any errors are encountered during parsing
+	// the application will be terminated.
+	flag.Parse()
+
 	// Use the http.NewServerMux() funtion to initialize a new servermux.
 	mux := http.NewServeMux()
 
