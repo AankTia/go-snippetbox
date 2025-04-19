@@ -159,6 +159,8 @@ If you nees to avoid this cannonicalization behaviour, you can edit the header n
 
 ## 2.5. URL query strings
 
+To retrive the value of the `id` parameter from URL query string, whish we can do using `r.URL.Query().Get()` method. This will always return a string value of a parameter, or the empty string `""` if no matching parameter exists.
+
 ## 2.6. Project structure and organization
 
 ## 2.7. HTML templating and inheritance
