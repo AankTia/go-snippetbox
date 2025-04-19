@@ -30,6 +30,7 @@ LET'S GO! (A Step-by Step Guide to Creating Fast, Secure, And Maintanable Web Ap
   ```bash
   go mod init github.com/AankTia/go-snippetbox
   ```
+- Use the `go run .` command in our terminal to compile and execute the code in current directory.
 
 ## 2.2. Web application basics
 
