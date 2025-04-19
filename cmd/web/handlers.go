@@ -15,11 +15,19 @@ func home(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	}
 
+	// Initilize a slice containing the paths to the two files. It's important
+	// to mote that the file containing our base template must be the *first*
+	// file in the slice.
+	files := []string {
+		"./ui/html/base.tmpl",
+		"./ui/html/pages/home.tmpl",
+	}
+
 	// Use the template.ParseFiles() function to read the template file into
 	// a template set. If there's an error, we log the detailed error messages
 	// and use the http.Error() function to send a generic 500 Internal Server
 	// Error response to the user
-	ts, err := template.ParseFiles("./ui/html/pages/home.tmpl")
+	ts, err := template.ParseFiles(files...)
 	if err != nil {
 		log.Print(err.Error())
 		http.Error(w, "Internal Server Error", 500)

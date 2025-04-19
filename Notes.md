@@ -197,6 +197,17 @@ The structure of project repository should look like this:
 
 ## 2.7. HTML templating and inheritance
 
+### Template composition
+
+To save us typing and prevent duplication, it's a good idea to create a _base_ (or _master_) template which contains this shared content, which we can then _compose_ with the page-specific markup for the individual pages.
+
+We're using the `{{define "base"}}...{{end}}` action to define a distinct `named template` called `base`, which contains the content we want to appear on ever page.
+
+> **Note** :
+>
+> If you're wondering, the dot at the end of the `{{template "title" .}}` action represents any dynamic data that you want to pass to the invoked template.
+
+
 ...
 
 ## 2.8. Serving static files
