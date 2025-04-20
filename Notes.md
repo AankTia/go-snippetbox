@@ -502,6 +502,22 @@ Or if you want to download a specific version of a package, you can use the full
 go get github.com/go-sql-driver/mysql@1.0.3
 ```
 
+### Upgarding packages
+
+Once a package has been downloaded and added to your `go.mod` file he package and version are _fixed_. But there are many reasons why you might want to upgrade to us a newer version of a package in the future.
+
+To upgrade to latesr available _minor_ or _patch release_ of a package, you can cimply run `go get` with the `-u` flag like so:
+
+```bash
+go get -u github.com/foo/bar
+```
+
+Or alternatively, if you want to upgrade to a specific version then you should run the same command but with the appropriate `@version` suffix. For example"
+
+```bash
+go get -u github.com/foo/bar@v2.0.0
+```
+
 ## 4.3. Modules and reproducible builds
 
 ## 4.4. Creating a database connection pool
