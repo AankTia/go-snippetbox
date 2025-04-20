@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/AankTia/go-snippetbox/internal/models"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -14,6 +15,7 @@ import (
 type application struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
+	snippets *models.SnippetModel
 }
 
 func main() {
@@ -50,7 +52,7 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
-	// Also defer a call to db.Close(), 
+	// Also defer a call to db.Close(),
 	// so that the connection pool is closed before the main() function exits.
 	defer db.Close()
 
@@ -58,11 +60,12 @@ func main() {
 	app := &application{
 		errorLog: errorLog,
 		infoLog:  infoLog,
+		snippets: &models.SnippetModel{DB: db}, // Initialize a model.SnippetModel instance and add it to the application dependencies
 	}
 
 	// Initialize a http.Server struct.
 	// We set the Addr and Handler fields so that the server uses the same network address
-	// and routes, and set the ErrorLog field so that the server errorLog logger 
+	// and routes, and set the ErrorLog field so that the server errorLog logger
 	// in the event of any problems
 	srv := &http.Server{
 		Addr:     *addr,
