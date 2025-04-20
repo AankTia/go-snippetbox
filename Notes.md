@@ -347,6 +347,10 @@ Besides `Println()`, `Printf()` and `Fatal()` methods to write log messages, Go 
 
 As arule of thumb, you shoud avoid using teh `Panic()` and `Fatal()` variations outside of your `main()` function, it's good practice to return errors instead, and only panic or exit direcly from `main()`
 
+### Concurrent logging
+
+Custom loggers created by `log.New()` are concurrentcy-dave. You can share a single logger and use it across multiple goroutines and in your handler without needing to worry about race conditions.
+
 ## 3.3. Dependency injection
 
 ## 3.4. Centralized error handling
