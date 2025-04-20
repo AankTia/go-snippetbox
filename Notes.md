@@ -341,6 +341,12 @@ go run ./cmd/web >>/tmp/info.log 2>>/tmp/error.log
 >
 > Using the double arrow `>>` will append to an existing file, instead of truncating it when starting the application
 
+### Additional logging methods
+
+Besides `Println()`, `Printf()` and `Fatal()` methods to write log messages, Go provides _[range of other methods](https://pkg.go.dev/log/#Logger)_.
+
+As arule of thumb, you shoud avoid using teh `Panic()` and `Fatal()` variations outside of your `main()` function, it's good practice to return errors instead, and only panic or exit direcly from `main()`
+
 ## 3.3. Dependency injection
 
 ## 3.4. Centralized error handling
