@@ -179,15 +179,15 @@ The structure of project repository should look like this:
 
 - `cmd` directory
 
-    Contain the _application specific_ code for the executable applications in the project.
+  Contain the _application specific_ code for the executable applications in the project.
 
 - `internal` directory
 
-    Contain the ancillary _non-application-specific_ code used in the project. Use it to hold potentially reusable code like validation helpers and the SQL database models for the project.
+  Contain the ancillary _non-application-specific_ code used in the project. Use it to hold potentially reusable code like validation helpers and the SQL database models for the project.
 
 - `ui` directory
 
-    Contain the `user-interface assets` used by the web application. Specifically, the `ui/html` directory will contain HTML, and the `ui/static` directory will contain static files (like css and images)
+  Contain the `user-interface assets` used by the web application. Specifically, the `ui/html` directory will contain HTML, and the `ui/static` directory will contain static files (like css and images)
 
 **Benefits using this structure**
 
@@ -230,7 +230,7 @@ func downloadHandler(w http.ResponseWriter, r *http.Request) {
 
 > **_Warning_**
 >
-> `http.ServeFile()` does not automatically sanitize the file path. If you're constructiong a file path form untrusted user input, to avoid directory traversal attacks **_you must_** sanitize the input with  _[filepath.Clean()](https://pkg.go.dev/path/filepath/#Clean)_ before using it.
+> `http.ServeFile()` does not automatically sanitize the file path. If you're constructiong a file path form untrusted user input, to avoid directory traversal attacks **_you must_** sanitize the input with _[filepath.Clean()](https://pkg.go.dev/path/filepath/#Clean)_ before using it.
 
 ### Disabling directory listing
 
@@ -247,7 +247,6 @@ find ./ui/static -type -d exec touch {}/index.html \;
 **_A more complicated_** (but arguably better) solution is to create a custom implementation of `http.FileSystem`, and have it return an `os.ErrorNotExist error for any directories`
 ...
 
-
 ## 2.9. The http.Handler interface
 
 ---
@@ -255,6 +254,65 @@ find ./ui/static -type -d exec touch {}/index.html \;
 # 3. Configuration and error handling
 
 ## 3.1. Managing configuration settings
+
+### Command-line flags
+
+In Go, a common and idiomatic way to manage configuration settings is to use `command-line` flags when starting an application.
+
+For example:
+
+```bash
+go run ./cmd/web -addr=":80"
+```
+
+The easiest wat to accept and parse a command-line flag form your applcation is with a line of conde like this:
+
+```go
+addr := flag.String("addr", ":4000", "HTTP network address")
+```
+
+> **_Note_**
+>
+> Ports 0-1023 are restricted and (typically) can only be used by services which have root privileges.
+> If you try to use one of these port you should get a `bind: permission denied` error message on start-up
+
+### Automated help
+
+Anoter great feature is that you can use the `-help` flag to list all the available command-line flags for an application and their accompanying help text.
+
+```bash
+go run ./cmd/web -help
+```
+
+### Environment variables
+
+You can store your configuration settings on environment variables and access them directly from your application by using the `os.Getenv()` function like so:
+
+```go
+addr: os.Getenv("SNIPPETBOX_ADDR")
+```
+
+### Pre-existing variables
+
+It's possible to parse command-line flag values into the memory addresses of pre-ecisting variables, using the `flag.StringVar()`, `flag.IntVar()`, `flag.BoolVar()` and oher function.
+
+This can be useful if you want to strore all your configuration settings in a single struct. As a rough example:
+
+```go
+type config struct {
+    addr        string
+    staticDir   string
+}
+
+...
+
+var cfg config
+
+flag.StringVar(&cfg.addr, "addr", ":4000", "HTTP network adress")
+flag.StringVar(&cfg.staticDir, "static-dir", ".ui/static", "Path to static asset")
+
+flag.Parse()
+```
 
 ## 3.2. Leveled logging
 
