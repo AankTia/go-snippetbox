@@ -357,6 +357,37 @@ Custom loggers created by `log.New()` are concurrentcy-dave. You can share a sin
 
 There are a [fet different way](https://www.alexedwards.net/blog/organising-database-access) to do this, the simplest being to just put the dependencies in global variables. But in general, it is good practice to _inject dependencie_ into your handles. It makes your code more explicit, less error-prone and easier to unit test than if you use global variables.
 
+### Closures for dependency injection
+
+The pattern to inject dependencies won't work if your handler are sparated acrorss multiple packages.
+
+In that case, an alternative approach is to create a `config` package exporting an `Application` struct and have your handler functions close over this to form a _closure_. For example
+
+```go
+func main(){
+    app := &config.Application {
+        ErrorLog: log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+    }
+
+    mux.Handle("/", examplePackage.ExampleHandler(app))
+}
+```
+
+```go
+func ExampleHandler(app *config.Application) httpHandlerFunc {
+    return func(w http.ResponseWritter, r *http.Request) {
+        // ...
+        ts, err := template.ParseFiles(files...)
+        if err != nil {
+            app.ErrorLog.Print(err.Error())
+            http.Error(w, "Inernal Server Error", 500)
+            return
+        }
+        // ...
+    }
+}
+```
+
 ## 3.4. Centralized error handling
 
 ## 3.5. Isolating the application routes
