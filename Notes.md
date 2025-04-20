@@ -502,6 +502,8 @@ Or if you want to download a specific version of a package, you can use the full
 go get github.com/go-sql-driver/mysql@1.0.3
 ```
 
+## 4.3. Modules and reproducible builds
+
 ### Upgarding packages
 
 Once a package has been downloaded and added to your `go.mod` file he package and version are _fixed_. But there are many reasons why you might want to upgrade to us a newer version of a package in the future.
@@ -518,7 +520,21 @@ Or alternatively, if you want to upgrade to a specific version then you should r
 go get -u github.com/foo/bar@v2.0.0
 ```
 
-## 4.3. Modules and reproducible builds
+### Removing unused packages
+
+Sometime you migght `go get` a package only to realizie later that you don't need it anymorw. When this happens you've got two choice.
+
+You could either run `go get` and postfix the package path with `@none`, like so:
+
+```bash
+go get -u github.com/foo/bar@none
+```
+
+Or if you've removed all references to the package in your code, you could run `go mod tidy`, which will automatically remove any unused packages from your `go.mod` and `go.sum` files.
+
+```bash
+go mod tidy -v
+```
 
 ## 4.4. Creating a database connection pool
 
