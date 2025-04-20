@@ -337,7 +337,7 @@ For example, we could redirect the stdout and stderr streams to on-disk files wh
 go run ./cmd/web >>/tmp/info.log 2>>/tmp/error.log
 ```
 
-> **_Note**
+> **\_Note**
 >
 > Using the double arrow `>>` will append to an existing file, instead of truncating it when starting the application
 
@@ -392,7 +392,6 @@ func ExampleHandler(app *config.Application) httpHandlerFunc {
 
 ...
 
-
 ## 3.5. Isolating the application routes
 
 ...
@@ -409,53 +408,55 @@ Form MySQL CLI:
 
 1. Create a new `go_snippetbox` database using UTF8 encoding
 
-    ```sql
-    -- Create a new UTF-8 `snippetbox` database.
-    CREATE DATABASE go_snippetbox CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-    
-    -- Switch to using the
-    USE go_snippetbox;
-    ```
+   ```sql
+   -- Create a new UTF-8 `snippetbox` database.
+   CREATE DATABASE go_snippetbox CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+   -- Switch to using the
+   USE go_snippetbox;
+   ```
 
 2. Create a new `snippets` table
-    ```sql
-    -- Create a`snippets` table.
-    CREATE TABLE snippets (
-        id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        title VARCHAR(100) NOT NULL,
-        content TEXT NOT NULL,
-        created DATETIME NOT NULL,
-        expires DATETIME NOT NULL
-    );
-    
-    -- Add an index on the created column.
-    CREATE INDEX idx_snippets_created ON snippets(created);
-    ```
+
+   ```sql
+   -- Create a`snippets` table.
+   CREATE TABLE snippets (
+       id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+       title VARCHAR(100) NOT NULL,
+       content TEXT NOT NULL,
+       created DATETIME NOT NULL,
+       expires DATETIME NOT NULL
+   );
+
+   -- Add an index on the created column.
+   CREATE INDEX idx_snippets_created ON snippets(created);
+   ```
 
 3. Add some placeholder entries to the `snippets` table
-    ```sql
-    -- Add some dummy records (which we'll use in the next couple of chapters).
-    INSERT INTO snippets (title, content, created, expires) VALUES (
-        'An old silent pond',
-        'An old silent pond...\nA frog jumps into the pond,\nsplash! Silence again.\n\n– Matsuo Bashō',
-        UTC_TIMESTAMP(),
-        DATE_ADD(UTC_TIMESTAMP(), INTERVAL 365 DAY)
-    );
 
-    INSERT INTO snippets (title, content, created, expires) VALUES (
-        'Over the wintry forest',
-        'Over the wintry\nforest, winds howl in rage\nwith no leaves to blow.\n\n– Natsume Soseki',
-        UTC_TIMESTAMP(),
-        DATE_ADD(UTC_TIMESTAMP(), INTERVAL 365 DAY)
-    );
+   ```sql
+   -- Add some dummy records (which we'll use in the next couple of chapters).
+   INSERT INTO snippets (title, content, created, expires) VALUES (
+       'An old silent pond',
+       'An old silent pond...\nA frog jumps into the pond,\nsplash! Silence again.\n\n– Matsuo Bashō',
+       UTC_TIMESTAMP(),
+       DATE_ADD(UTC_TIMESTAMP(), INTERVAL 365 DAY)
+   );
 
-    INSERT INTO snippets (title, content, created, expires) VALUES (
-        'First autumn morning',
-        'First autumn morning\nthe mirror I stare into\nshows my father''s face.\n\n– Murakami Kijo',
-        UTC_TIMESTAMP(),
-        DATE_ADD(UTC_TIMESTAMP(), INTERVAL 7 DAY)
-    );
-    ```
+   INSERT INTO snippets (title, content, created, expires) VALUES (
+       'Over the wintry forest',
+       'Over the wintry\nforest, winds howl in rage\nwith no leaves to blow.\n\n– Natsume Soseki',
+       UTC_TIMESTAMP(),
+       DATE_ADD(UTC_TIMESTAMP(), INTERVAL 365 DAY)
+   );
+
+   INSERT INTO snippets (title, content, created, expires) VALUES (
+       'First autumn morning',
+       'First autumn morning\nthe mirror I stare into\nshows my father''s face.\n\n– Murakami Kijo',
+       UTC_TIMESTAMP(),
+       DATE_ADD(UTC_TIMESTAMP(), INTERVAL 7 DAY)
+   );
+   ```
 
 ### Creating a new user
 
@@ -474,6 +475,32 @@ ALTER USER 'web'@'localhost' IDENTIFIED BY 'password';
 ```
 
 ## 4.2. Installing a database driver
+
+To use MySQL from Go web application, we need to install a `database` driver. This essentially acts as a middleman, translating commands between Go and the MySQL database itself.
+
+You can finc a comprehensive [list of available drivers](https://github.com/golang/go/wiki/SQLDrivers) on the Go wiki. But for popular deiver is **_[go-sql-driver](https://github.com/go-sql-driver/mysql)_**
+
+To donwload it, go to project directory and run `go get` command like so:
+
+```bash
+go get github.com/go-sql-driver/mysql@v1
+```
+
+> **_Notice_**
+>
+> Here we're postficing the package path with `@v1` to indicate we want to download the latest aailable version of the package _with_ the major release number 1.
+
+As an aside, if you want to download the last version, irrespective of number, you can simply ommit the `@version` suffix like so:
+
+```bash
+go get github.com/go-sql-driver/mysql
+```
+
+Or if you want to download a specific version of a package, you can use the full version number. For examlpe:
+
+```bash
+go get github.com/go-sql-driver/mysql@1.0.3
+```
 
 ## 4.3. Modules and reproducible builds
 
