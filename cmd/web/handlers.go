@@ -11,7 +11,7 @@ import (
 // "Hello from Snippetbox" as the response body.
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
-		http.NotFound(w, r)
+		app.notFound(w)
 	}
 
 	// Initilize a slice containing the paths to the two files. It's important
@@ -29,8 +29,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	// Error response to the user
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
-		// Write the log message to this instead of the standard logger.
-		app.errorLog.Print(err.Error())
+		app.serverError(w, err)
 		http.Error(w, "Internal Server Error", 500)
 		return
 	}
@@ -40,8 +39,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	// represent any dynamic data we want to pass in, which is now we'll leave as nil.
 	err = ts.ExecuteTemplate(w, "base", nil)
 	if err != nil {
-		app.errorLog.Print(err.Error())
-		http.Error(w, "Internal Server Error", 500)
+		app.serverError(w, err)
 	}
 }
 
@@ -52,13 +50,12 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 	// we return a 404 page not found response.
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil || id < 1 {
-		http.NotFound(w, r)
-		return
+		app.notFound(w)
 	}
 
 	// Use the fmt.Fprintf() function to interpolate the id value with our response
 	// and write it to the http.ResponseWriter
-	fmt.Fprint(w, "Display a specific snippet with ID %d...", id)
+	fmt.Fprintf(w, "Display a specific snippet with ID %d...", id)
 }
 
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
@@ -68,10 +65,7 @@ func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 		// the response header map. The first parameter is the header name, and
 		// the second parameter is the header value
 		w.Header().Set("Allow", "POST")
-
-		// Use the http.Error() function to send a 405 status code and
-		// "Method Not Allowed" string as the response body.
-		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		app.clientError(w, http.StatusMethodNotAllowed)
 		return
 	}
 
