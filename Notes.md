@@ -457,6 +457,22 @@ Form MySQL CLI:
     );
     ```
 
+### Creating a new user
+
+From a security point of view it's not a good ides to connect to MySQL as the `root` user from a web application.
+
+Instead it's better to create a database user with restricted permission on the database.
+
+Create new user for connect db:
+
+```sql
+CREATE USER 'web'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON go_snippetbox.* TO 'web'@'localhost';
+
+-- Important: Make sure to swap 'password' with a password of your own choosing
+ALTER USER 'web'@'localhost' IDENTIFIED BY 'password';
+```
+
 ## 4.2. Installing a database driver
 
 ## 4.3. Modules and reproducible builds
