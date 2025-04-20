@@ -9,7 +9,7 @@ import (
 
 func main() {
 	// Define a new command-line flag with name `addr`, a default value of ":4000"
-	// and some short help text explaining what the flag controls. 
+	// and some short help text explaining what the flag controls.
 	// The value of the flag will be stored in the addr variable at runtime.
 	addr := flag.String("addr", ":4000", "HTTP network address")
 
@@ -21,7 +21,7 @@ func main() {
 	flag.Parse()
 
 	// Use log.New() to create a logger for writing information messages.
-	// This takse three parameters: the destination to write the logs to (os.Stdout), 
+	// This takse three parameters: the destination to write the logs to (os.Stdout),
 	// a string preffix for mesage (INFO followed by a tab), and flags to indicate
 	// what additional information to include (local date and time).
 	// Note that te flag are joined using the bitwise OR operator |.
@@ -40,7 +40,7 @@ func main() {
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 
 	// Use the mux.Handle() function to register the file server as the handle for
-	// all URL paths that start with "/static/". 
+	// all URL paths that start with "/static/".
 	// For matching paths, we strip the "/static" prefix before the request reaches file server.
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
@@ -49,12 +49,23 @@ func main() {
 	mux.HandleFunc("/snippet/view", snippetView)
 	mux.HandleFunc("/snippet/create", snippetCreate)
 
+	// Initialize a http.Server struct.
+	// We set the Addr and Handler fields so that the server uses the same network address
+	// and routes as before, and set the ErrorLog field so that the server now uses the custom
+	// errorLog logger in the event of any problems
+	srv := &http.Server{
+		Addr:     *addr,
+		ErrorLog: errorLog,
+		Handler:  mux,
+	}
+
 	// Use the http.ListenAndServe() function to start a new web server.
 	// We pass i two parameters: the TCP network address to listen on (in this case ":400")
 	// and the servermux we just created.
 	// If http.ListenAdnServe() returns as error, we use the log.Fatal() function to log error and exit.
 	// Note: tht any error returned by http.ListenAndServe() is always non-nil
 	infoLog.Printf("Starting server on %s", *addr)
-	err := http.ListenAndServe(*addr, mux)
+	// call teh ListenAndServe() method on our http.Server struct.
+	err := srv.ListenAndServe()
 	errorLog.Fatal(err)
 }
