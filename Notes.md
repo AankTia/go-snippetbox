@@ -390,13 +390,72 @@ func ExampleHandler(app *config.Application) httpHandlerFunc {
 
 ## 3.4. Centralized error handling
 
+...
+
+
 ## 3.5. Isolating the application routes
+
+...
 
 ---
 
 # 4. Database-driven responses
 
 ## 4.1. Setting up MySQL
+
+### Scaffolding the database
+
+Form MySQL CLI:
+
+1. Create a new `go_snippetbox` database using UTF8 encoding
+
+    ```sql
+    -- Create a new UTF-8 `snippetbox` database.
+    CREATE DATABASE go_snippetbox CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    
+    -- Switch to using the
+    USE go_snippetbox;
+    ```
+
+2. Create a new `snippets` table
+    ```sql
+    -- Create a`snippets` table.
+    CREATE TABLE snippets (
+        id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        title VARCHAR(100) NOT NULL,
+        content TEXT NOT NULL,
+        created DATETIME NOT NULL,
+        expires DATETIME NOT NULL
+    );
+    
+    -- Add an index on the created column.
+    CREATE INDEX idx_snippets_created ON snippets(created);
+    ```
+
+3. Add some placeholder entries to the `snippets` table
+    ```sql
+    -- Add some dummy records (which we'll use in the next couple of chapters).
+    INSERT INTO snippets (title, content, created, expires) VALUES (
+        'An old silent pond',
+        'An old silent pond...\nA frog jumps into the pond,\nsplash! Silence again.\n\n– Matsuo Bashō',
+        UTC_TIMESTAMP(),
+        DATE_ADD(UTC_TIMESTAMP(), INTERVAL 365 DAY)
+    );
+
+    INSERT INTO snippets (title, content, created, expires) VALUES (
+        'Over the wintry forest',
+        'Over the wintry\nforest, winds howl in rage\nwith no leaves to blow.\n\n– Natsume Soseki',
+        UTC_TIMESTAMP(),
+        DATE_ADD(UTC_TIMESTAMP(), INTERVAL 365 DAY)
+    );
+
+    INSERT INTO snippets (title, content, created, expires) VALUES (
+        'First autumn morning',
+        'First autumn morning\nthe mirror I stare into\nshows my father''s face.\n\n– Murakami Kijo',
+        UTC_TIMESTAMP(),
+        DATE_ADD(UTC_TIMESTAMP(), INTERVAL 7 DAY)
+    );
+    ```
 
 ## 4.2. Installing a database driver
 
