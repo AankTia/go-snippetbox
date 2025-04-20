@@ -7,6 +7,12 @@ import (
 	"os"
 )
 
+// Define an application struct to holed the application-wide dependencies for the web application.
+type application struct {
+	errorLog *log.Logger
+	infoLog  *log.Logger
+}
+
 func main() {
 	// Define a new command-line flag with name `addr`, a default value of ":4000"
 	// and some short help text explaining what the flag controls.
@@ -31,6 +37,12 @@ func main() {
 	// the destination and use the log.Lshortfile flag to include the relevant file name and line number
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
+	// Initialize a new instance of application struct, containg the dependencies
+	app := &application{
+		errorLog: errorLog,
+		infoLog:  infoLog,
+	}
+
 	// Use the http.NewServerMux() funtion to initialize a new servermux.
 	mux := http.NewServeMux()
 
@@ -45,9 +57,9 @@ func main() {
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	// register the home function as the handler of the "/" URL pattern.
-	mux.HandleFunc("/", home)
-	mux.HandleFunc("/snippet/view", snippetView)
-	mux.HandleFunc("/snippet/create", snippetCreate)
+	mux.HandleFunc("/", app.home)
+	mux.HandleFunc("/snippet/view", app.snippetView)
+	mux.HandleFunc("/snippet/create", app.snippetCreate)
 
 	// Initialize a http.Server struct.
 	// We set the Addr and Handler fields so that the server uses the same network address

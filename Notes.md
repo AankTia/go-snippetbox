@@ -353,6 +353,10 @@ Custom loggers created by `log.New()` are concurrentcy-dave. You can share a sin
 
 ## 3.3. Dependency injection
 
+**_How can we make any dependency available to our handler?_**
+
+There are a [fet different way](https://www.alexedwards.net/blog/organising-database-access) to do this, the simplest being to just put the dependencies in global variables. But in general, it is good practice to _inject dependencie_ into your handles. It makes your code more explicit, less error-prone and easier to unit test than if you use global variables.
+
 ## 3.4. Centralized error handling
 
 ## 3.5. Isolating the application routes
