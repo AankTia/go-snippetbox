@@ -323,6 +323,24 @@ The `log.Fatal()` function will also call `os.Exit(1)` after writting teh messag
 > If tou want to include the full file path in your log output, instead of just the file name, you can use the `log.Llongfile` flag instead of `log.Lshortfile` when creating your system logger.
 > You can also force your logger to use UTC datetimes (instead of local ones) by adding the `log.LUTC` flag.
 
+### Decoupled logging
+
+A big benefit of loggin your messages to the standard streams (stdout and stderr) are decoupled. Your application itself isn't concered with the routing or storage of the logs. and that can make it easier to manage the logs differenty depending on the environment.
+
+Duting de development, it's easy to view the log output because the standard streams are displayed in the terminal.
+
+In staging or production environments, you can redirect the streams to a final destination fr viewing and acrhival. This destination could be on-disk files, or a loging service.
+
+For example, we could redirect the stdout and stderr streams to on-disk files when staring the application like so:
+
+```bash
+go run ./cmd/web >>/tmp/info.log 2>>/tmp/error.log
+```
+
+> **_Note**
+>
+> Using the double arrow `>>` will append to an existing file, instead of truncating it when starting the application
+
 ## 3.3. Dependency injection
 
 ## 3.4. Centralized error handling
