@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
@@ -18,6 +19,17 @@ func main() {
 	// contain the default value of ":4000". If any errors are encountered during parsing
 	// the application will be terminated.
 	flag.Parse()
+
+	// Use log.New() to create a logger for writing information messages.
+	// This takse three parameters: the destination to write the logs to (os.Stdout), 
+	// a string preffix for mesage (INFO followed by a tab), and flags to indicate
+	// what additional information to include (local date and time).
+	// Note that te flag are joined using the bitwise OR operator |.
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+
+	// Create a logger for writing error messages in the same way, but use stderr as
+	// the destination and use the log.Lshortfile flag to include the relevant file name and line number
+	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	// Use the http.NewServerMux() funtion to initialize a new servermux.
 	mux := http.NewServeMux()
@@ -42,7 +54,7 @@ func main() {
 	// and the servermux we just created.
 	// If http.ListenAdnServe() returns as error, we use the log.Fatal() function to log error and exit.
 	// Note: tht any error returned by http.ListenAndServe() is always non-nil
-	log.Printf("Starting server on %s", *addr)
+	infoLog.Printf("Starting server on %s", *addr)
 	err := http.ListenAndServe(*addr, mux)
-	log.Fatal(err)
+	errorLog.Fatal(err)
 }

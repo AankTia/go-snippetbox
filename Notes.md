@@ -316,6 +316,13 @@ flag.Parse()
 
 ## 3.2. Leveled logging
 
+The `log.Fatal()` function will also call `os.Exit(1)` after writting teh message, causing the application to immediately exit.
+
+> **_Tip_**
+>
+> If tou want to include the full file path in your log output, instead of just the file name, you can use the `log.Llongfile` flag instead of `log.Lshortfile` when creating your system logger.
+> You can also force your logger to use UTC datetimes (instead of local ones) by adding the `log.LUTC` flag.
+
 ## 3.3. Dependency injection
 
 ## 3.4. Centralized error handling
