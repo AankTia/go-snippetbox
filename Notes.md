@@ -211,7 +211,40 @@ We're using the `{{define "base"}}...{{end}}` action to define a distinct `named
 
 ### `http.Fileserver` handler
 
-Go's `net/http` package ships with a build-in `http.FileServer` handler which you can use to serve files over HTTP from a specific directory
+Go's `net/http` package ships with a build-in `http.FileServer` handler which you can use to serve files over HTTP from a specific directory.
+
+> **_Important Note:_**
+>
+> Once the application is up-and-running, `http.FileServer` probably wont'be reading file from disk.
+> Both Windows and Unix-based operating system cache recently-used files in RAM, so (for frequently-served files at least) it's likely that `http.FileServer` will be serving then from RAM rather than making the relatively slow round-trip to your har disk.
+
+### Serving single files (`http.ServeFile`)
+
+Sometime you might want to serve a single file from within a handler. For this there's the `http.ServeFile()` function, which you can use like so :
+
+```go
+func downloadHandler(w http.ResponseWriter, r *http.Request) {
+    http.ServeFile(w, r, "./ui/ststic/file.zip")
+}
+```
+
+> **_Warning_**
+>
+> `http.ServeFile()` does not automatically sanitize the file path. If you're constructiong a file path form untrusted user input, to avoid directory traversal attacks **_you must_** sanitize the input with  _[filepath.Clean()](https://pkg.go.dev/path/filepath/#Clean)_ before using it.
+
+### Disabling directory listing
+
+If you want to disable directory listings there are a few different approaches you can take.
+
+**_The Simple Way:_** Add a blank `index.html` file to the specific directory that you want to dosable listings for. This will then be served instead of the directory listing, and the user will get a `200 OK` response with no body.
+
+If you want to do this for all directories under `.ui/static` you can use the command:
+
+```bash
+find ./ui/static -type -d exec touch {}/index.html \;
+```
+
+**_A more complicated_** (but arguably better) solution is to create a custom implementation of `http.FileSystem`, and have it return an `os.ErrorNotExist error for any directories`
 ...
 
 
