@@ -1,10 +1,13 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"log"
 	"net/http"
 	"os"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 // Define an application struct to holed the application-wide dependencies for the web application.
@@ -18,6 +21,9 @@ func main() {
 	// and some short help text explaining what the flag controls.
 	// The value of the flag will be stored in the addr variable at runtime.
 	addr := flag.String("addr", ":4000", "HTTP network address")
+
+	// Define a command-line flag for the MySQL DSN string.
+	dsn := flag.String("dsn", "web:password@/go_snippetbox?parseTime=True", "MySQL data source name")
 
 	// Importantly, we use the flag.Parse() function to parse the command-line-flag.
 	// This reads in the command-line flag value and assigns it to the addr valiable.
@@ -36,6 +42,17 @@ func main() {
 	// Create a logger for writing error messages in the same way, but use stderr as
 	// the destination and use the log.Lshortfile flag to include the relevant file name and line number
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+
+	// To keep the main() function tidy, put the code for creating a connection pool into
+	// the separate openDB() function.
+	db, err := openDB(*dsn)
+	if err != nil {
+		errorLog.Fatal(err)
+	}
+
+	// Also defer a call to db.Close(), 
+	// so that the connection pool is closed before the main() function exits.
+	defer db.Close()
 
 	// Initialize a new instance of application struct, containg the dependencies
 	app := &application{
@@ -60,6 +77,20 @@ func main() {
 	// Note: tht any error returned by http.ListenAndServe() is always non-nil
 	infoLog.Printf("Starting server on %s", *addr)
 	// call teh ListenAndServe() method on our http.Server struct.
-	err := srv.ListenAndServe()
+	err = srv.ListenAndServe()
 	errorLog.Fatal(err)
+}
+
+// The openDb() function wraps sql.Open() ad returns a sql.DB connection poll for a given DSN.
+func openDB(dsn string) (*sql.DB, error) {
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = db.Ping(); err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }

@@ -538,6 +538,28 @@ go mod tidy -v
 
 ## 4.4. Creating a database connection pool
 
+After MySQL database is all set up and w've got a driver installed, next step is connect to the database from our web application.
+
+To do this we need Go's `sql.Open()` function, like this:
+
+```go
+// pool of database connections.
+db, err := sql.Open("mysql", "web:password@/go_snipepetbox?parseTime=true")
+if err != nil {
+    ...
+}
+```
+
+- The first parameter to `sql.Open()` is the _driver name_ and the second parameter is the _data source name_ (sometimes also called _connection string_ or _DSN_) whhich describes how to connet to your database
+
+- The `parseTime=True` part of the DSN above is a `driver-specific` parameter which instructs our driver to connecct SQL `TIME` and `DATE` field to Go `time.Time` objects.
+
+- The `sql.Open()` function returns a `sql.DB` object. This is isn't a database connection, it's a _pool of many connections_.
+
+- The connection pool is safe for concurrent access.
+
+- The connection pool is intended t be long-lived. In a web application it's nnormal to initialize the connection pool in your `main()` function and then pass the pool to your handlers, You shouldn't call `sql.Open()` in a short-lived handler itself, it would be a waste of memory and network resources.
+
 ## 4.5. Designing a database model
 
 ## 4.6. Executing SQL statements
