@@ -657,6 +657,14 @@ The `dataase/sql` package essentially provides a standard interface between your
 
 So long as you use the `database/sql` package, the Go code you write will generally be portable and work with any kind of SQL database -- whether it's MySQL, PostreSQL, SQLite or something else. This means that your application isn't tighly coupled to the database that you're currently using, and the theory is that you can swap databases in the future without re-writing all of your code (driver-specific quirks and SQL implementations aside).
 
+### Verbosity
+
+If you're from Ruby, Python or PHP, the code for querying SQL databases may feel a bit verbose, especially if you're used to dealing with an abstraction layer or ORM.
+
+If the verbosity really is starting to grate on you, you might want to consider trying the **_(jmoiron/sqlx)[https://github.com/jmoiron/sqlx]_** package. Its well designed and provides some good extentions that make working with SQL queries quicker and easier.
+
+Another, newer, option you mas want to consider is the **_(blockloop/scan)[https://github.com/blockloop/scan]_**
+
 ---
 
 # 5. Dynamic HTML templates
