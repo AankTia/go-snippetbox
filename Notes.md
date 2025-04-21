@@ -607,6 +607,16 @@ _, err := m.DB.Exec("INSERT INTO ... VALUES ($1, $2, $3)", ...)
 
 ## 4.7. Single-record SQL queries
 
+Use `row.Scan()` to copy the values from each field in sql.Row to the corresponding field in the Model struct.
+
+Behind the scenes or `rows.Scan()` your driver will automatically convert the row output from the SQL database to the required native Go types. So long as you're sensible with the types that you're mapping between SQL and Go, there conversions should generally just work. Usually:
+
+- `CHAR`, `VARCHAR` and `TEXT` map to `string`.
+- `BOOLEAN` maps to `bool`.
+- `INT` maps to `int`; `BIGINT` maps to `int64`.
+- `DECIMAL` and `NUMERIC` map to `float`.
+- `TIME`, `DATE` and `TIMESTAMP` map to `time.Time`.
+
 ## 4.8. Multiple-record SQL queries
 
 ## 4.9. Transactions and other details
