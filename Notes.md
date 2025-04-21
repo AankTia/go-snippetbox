@@ -841,6 +841,30 @@ Anther example, the following taq will render the content `C1` if `.Foo` equals 
 {{if (and (eq .Foo 1) (le .Bar 20))}} C1 {{end}}
 ```
 
+### Controlling loop behaviour
+
+Within a `{{range}}` action you can use the `{{break}}` command to end the loop early, and `{{continue}}` to immediately start the next loop iteration.
+
+```go
+{{range . Foo}}
+    // Skip this iteration if the .ID value equals 99.
+    {{if eq .ID 99}}
+        {{continue}}
+    {{end}}
+    // ...
+{{end}}
+```
+
+```go
+{{range .Foo}}
+    // End the loop if the .ID value equals 99
+    {{if eq .ID 99}}
+        {{break}}
+    {{end}}
+    // ...
+{{end}}
+```
+
 ## 5.3. Caching templates
 
 ## 5.4. Catching runtime errors
