@@ -47,7 +47,7 @@ func (m *SnippetModel) Insert(title string, content string, expires int) (int, e
 // Return a specific snippet base on its id.
 func (m *SnippetModel) Get(id int) (*Snippet, error) {
 	stmt := `
-		SELECT id, title, content, created, ecpires FROM snippets
+		SELECT id, title, content, created, expires FROM snippets
 		WHERE expires > UTC_TIMESTAMP() AND id = ?
 	`
 

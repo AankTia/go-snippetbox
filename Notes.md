@@ -617,6 +617,34 @@ Behind the scenes or `rows.Scan()` your driver will automatically convert the ro
 - `DECIMAL` and `NUMERIC` map to `float`.
 - `TIME`, `DATE` and `TIMESTAMP` map to `time.Time`.
 
+### Checking for specific errors
+
+We use `errors.Is()` function to check whether an error matching a specific value. Like this:
+
+```go
+if errors.Is(err, models.ErrNoRecord) {
+    app.notFound(w)
+} else {
+    app.serverError(w, err)
+}
+```
+
+Prior to Go 1.13, the idiomatic way to do this way to use the equality operator `==` to perform the check, like so:
+
+```go
+if err == modles.ErrNoRecord {
+    app.notFound(w)
+} else {
+    app.serverError(w, err)
+}
+```
+
+But, while this code still compiles, it's now safer and best practice to use the `errors.Is()` function instead.
+
+This is because Go 1.13 introduce the ability to add aditional information to errors by [wrapping them](https://go.dev/blog/go1.13-errors#wrapping-errors-with-w). If an error happens to get wrapped, a entierly new error value created -- which in turn means that it's not possible to check the value of the original underlying error using the reglar `==` equality operator.
+
+In contrast, the `errors.Is()` function works by _unwrapping_ errors as necessary before checking for a match.
+
 ## 4.8. Multiple-record SQL queries
 
 ## 4.9. Transactions and other details
