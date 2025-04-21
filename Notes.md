@@ -665,6 +665,65 @@ If the verbosity really is starting to grate on you, you might want to consider 
 
 Another, newer, option you mas want to consider is the **_(blockloop/scan)[https://github.com/blockloop/scan]_**
 
+### Working with transactions
+
+It's important to realize that calls to `Exec()`, `Query()` and `QueryRow()` can use _any connection from the `sql.DB` pool_. Even if you have two calls to `Exec()` immediately next to each other in your code, there is no guarantee that they will use the same database connection.
+
+Sometimes this isn't acceptable. For instance, if you lock a table with MySQL's `LOCK TABLES` command you must call `UNLOCK TABLES` on exactly the sama connection to avoid a deadlock.
+
+To guarantee that the same connection is used you can wrap multiple statements in a _transaction_. Here's the basic pattern:
+
+```go
+type ExampleModel struct {
+    DB *sql.DB
+}
+
+func (m *ExampleModel) ExampleTransaction() error {
+    // Calling the Begin() method on the connection pool create a new sql.Tx object,
+    // which represents the in-progress database transaction
+    tx, err := m.DB.Begin()
+    ir err != nil {
+        return err
+    }
+
+    // Defer a call to tx.Rollback() to ensure it is always called before the function returns.
+    // If the transaction succeeds it will be already be committed by the time tx.Rollback() is called,
+    // making tx.Rollback() a no-op.
+    // Otherwise, in the event of an error, tx.Rollback() will rollback the changes before the function returns.
+    defer tx.Rollback()
+
+    // Call Exec() on the transaction, passing in your statement and any parameters.
+    // It's important to notice that tx.Exec() is called on the transaction object just created, NOT the connection pool.
+    // Although we;re using ts.Exec() here you can also use tx.Query() and tx.QueryRow() in exactly the same way.
+    _, err := tx.Exec("INSERT INTO ...")
+    if err != nil {
+        return err
+    }
+
+    // Carry out another transaction in exactly the same way.
+    _, err = tx.Execute("UPDATE ...")
+    if err != nil {
+        return err
+    }
+
+    // If there are no errors, the statements in the transaction can be commited to the database with the tc.Commit() method.
+    err = tx.Commit()
+    return err
+}
+```
+
+> **_Imprtant_**
+>
+> You must _always_ call either `Rollback()` or `Commit()` before you function returns.
+> If you don't the connection will stay open and not be returned to the connection pool.
+> This can lead to hitting your maximum connection limit/running out of resources.
+> The simplest way to avoid this is to use `defer tx.Rollback()`
+
+Transactions are also super-usefull if you want to execute multiple SQL statements as a _single atomic action_. So long as you use the `tx.Rollback()` method in the event of any errors, the transaction ensure that either:
+
+- _All_ statements are executed successfully; or
+- _No_ statements are executed and the database remains unchanged.
+
 ---
 
 # 5. Dynamic HTML templates
