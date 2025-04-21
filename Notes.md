@@ -802,9 +802,30 @@ When you're invoking one template from another template, dot neds to be explicit
 
 As a general rule, my advice is to get into the habit of always pipeliningdot whenever you invoke a template with the `{{template}}` or `{{block}}` actions, unless you have a good reason not to.
 
+## 5.2. Template actions and functions
+
+| Action                                  | Description                                                                                                                                                                                                                                                                          |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `{{if .Foo}} C1 {{else}} C2 {{end}}`    | If `.Foo` is not empty, then render the content C1, otherwise render the content C2                                                                                                                                                                                                  |
+| `{{with .Foo}} C1 {{else}} C2 {{end}}`  | If `.Foo` is not empty, then set dot to the value of `.Foo` and render the content C1, otherwise render the content C2                                                                                                                                                               |
+| `{{range .Foo}} C1 {{else}} C2 {{end}}` | If the length of `.Foo` is greater than zero then loop over each element, setting dot to the value of each element and rendering the content C1. If the length of `.Foo` is zero then render the content C2. The underlying type of `.Foo` must be an array, slice, map, or channel. |
+
 ...
 
-## 5.2. Template actions and functions
+The `html/package` also provides some template functions which you can use to add extra logic to your templates and controll what is rendered at runtime.
+
+You can find a complete listing of functions [here](https://pkg.go.dev/text/template/#hdr-Functions), but the most important ones are:
+
+| Function                       | Description                                                                                                                            |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `{{eq .Foo .Bar}}`             | Yields true if `.Foo` is equal to `.Bar`                                                                                               |
+| `{{ne .Foo .Bar}}`             | Yields true if `.Foo` is not equal to `.Bar`                                                                                           |
+| `{{not .Foo}}`                 | Yields the boolean negation of `.Foo`                                                                                                  |
+| `{{or .Foo .Bar}}`             | Yields `.Foo` if `.Foo` is not empty; otherwise yield `.Bar`                                                                           |
+| `{{index .Foo i}}`             | Yields the value of `.Foo` at index `i`. The underlying type of `.Foo` must be a map, slice or array, and `i` mus be an integer value. |
+| `{{printf "%s-%s" .Foo .Bar}}` | Yields a formatted string containing the `.Foo` and `.Bar` values. Works in the same way as `fmt.Sprintf()`                            |
+| `{{len .Foo}}`                 | Yields the length of `.Foo` as an integer.                                                                                             |
+| `{{$bar := len .Foo}}`         | Assign the length of `.Foo` to the template variable `$bar`.                                                                           |
 
 ## 5.3. Caching templates
 
