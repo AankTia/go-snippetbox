@@ -724,6 +724,65 @@ Transactions are also super-usefull if you want to execute multiple SQL statemen
 - _All_ statements are executed successfully; or
 - _No_ statements are executed and the database remains unchanged.
 
+### Prepared statements
+
+The `Exec()`, `Query()` and `QueryRow()` methods all use prepared statements begind the scenes to help prevent SQL injection attacks. They set up a prepared statement on the database connection, run it with the paramaters provided, and then close the prepared statement.
+
+Thhis migh feel rather ineddicient because we are creating and recreating the same prepared statements every single time.
+
+In theory, a better approach could be to make use of the `DB.Prepare()` method to reate our own prepared statement once, and reuse that instead. This particulary true for complex SQL statements (e.q. those which have multiple JOINS) _and_ are repeated very often (e.g. a bulk insert of tens of thousands of records). In theses sentences, the cost of re-preparing statements may have a noticeable effect on run time,
+
+Here;s the basic pattern for using your own prepared statements in a web application:
+
+```go
+// We need somewhere to store the prepared statement for the lifetime of our web application.
+// A neat way is to embed in the model alongsinde the connection pool
+type ExampleModel struct {
+    DB          *sql.DB
+    InsertStmt  *sql.Stmt
+}
+
+// Create a constructir for the model, in which we set up the prepared statement.
+func NewExampleModel(db *sql.DB) (*ExampleModel, error) {
+    // Use the Prepare method tp create a new sparated statement for the current connection pool.
+    // This return a sql.Stmt object wirh represent the prepared statement.
+    insertStmt, err := db.Prepare("INSERT INTO ...")
+    if err != nil {
+        return nil, err
+    }
+
+    // Store it in our ExampleModel object, alongsinde the connection pool.
+    return &ExampleModel{db, insertStmt}, nil
+}
+
+// Any methos implemented against the Example object will have access to the prepared statement.
+func (m *ExampleModel) Insert(args...) error {
+    // Notice how we call Exec directly against the prepared statements, rather than against the connection poll.
+    // Prepared statements also support te Query and QueryRow methods.
+    _, err := m.InsertStmt.Exec(args...)
+
+    return err
+}
+
+// In the web application's main function we will need to initialize a new ExampleModel struct using the constructor function.
+func main() {
+    db, err := sql.Open(...)
+    if err != nil {
+        errorLog.Fatal(err)
+    }
+    defer db.Close()
+
+    // Create a new ExampleModel object, which includes the prepared statement.
+    exampleModel, err := NewExampleModel(db)
+    if err != nil {
+        errorLog.Fatal(err)
+    }
+
+    // Defer a call to Close() on the prepared statement to ensure that it is properly closed before our main function terminated
+    defer exampleModel.InsertStmt.Close()
+}
+```
+
 ---
 
 # 5. Dynamic HTML templates
