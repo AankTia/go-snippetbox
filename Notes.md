@@ -789,6 +789,10 @@ func main() {
 
 ## 5.1. Displaying dynamic data
 
+Within your HTML templates, any dynamic data that you pass in is represented by the `.` character (reffered to as _dot_).
+
+### Rendering multiple pieces of data
+
 ...
 
 ## 5.2. Template actions and functions
