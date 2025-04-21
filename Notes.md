@@ -789,6 +789,8 @@ func main() {
 
 ## 5.1. Displaying dynamic data
 
+...
+
 ## 5.2. Template actions and functions
 
 ## 5.3. Caching templates
