@@ -827,6 +827,20 @@ You can find a complete listing of functions [here](https://pkg.go.dev/text/temp
 | `{{len .Foo}}`                 | Yields the length of `.Foo` as an integer.                                                                                             |
 | `{{$bar := len .Foo}}`         | Assign the length of `.Foo` to the template variable `$bar`.                                                                           |
 
+### Combining functions
+
+For example, the following tag will render the content `C1` if the length of `Foo` is greater tah 99:
+
+```go
+{{if (gt (len .Foo) 99)}} C1 {{end}}
+```
+
+Anther example, the following taq will render the content `C1` if `.Foo` equals 1 _and_ `.Bar` is less than or equal to 20:
+
+```go
+{{if (and (eq .Foo 1) (le .Bar 20))}} C1 {{end}}
+```
+
 ## 5.3. Caching templates
 
 ## 5.4. Catching runtime errors
