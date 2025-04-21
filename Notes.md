@@ -647,6 +647,9 @@ In contrast, the `errors.Is()` function works by _unwrapping_ errors as necessar
 
 ## 4.8. Multiple-record SQL queries
 
+...
+
+
 ## 4.9. Transactions and other details
 
 ---

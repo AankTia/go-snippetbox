@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"html/template"
 	"net/http"
 	"strconv"
 
@@ -15,35 +14,46 @@ import (
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		app.notFound(w)
-	}
-
-	// Initilize a slice containing the paths to the two files. It's important
-	// to mote that the file containing our base template must be the *first*
-	// file in the slice.
-	files := []string{
-		"./ui/html/base.tmpl",
-		"./ui/html/partials/nav.tmpl",
-		"./ui/html/pages/home.tmpl",
-	}
-
-	// Use the template.ParseFiles() function to read the template file into
-	// a template set. If there's an error, we log the detailed error messages
-	// and use the http.Error() function to send a generic 500 Internal Server
-	// Error response to the user
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, err)
-		http.Error(w, "Internal Server Error", 500)
 		return
 	}
 
-	// We then use the Execure() method on the template set to write the
-	// template content as the response body. The last parameter to Execute()
-	// represent any dynamic data we want to pass in, which is now we'll leave as nil.
-	err = ts.ExecuteTemplate(w, "base", nil)
+	snippets, err := app.snippets.Latest()
 	if err != nil {
 		app.serverError(w, err)
+		return
 	}
+
+	for _, snippet := range snippets {
+		fmt.Fprintf(w, "%+v\n", snippet)
+	}
+
+	// // Initilize a slice containing the paths to the two files. It's important
+	// // to mote that the file containing our base template must be the *first*
+	// // file in the slice.
+	// files := []string{
+	// 	"./ui/html/base.tmpl",
+	// 	"./ui/html/partials/nav.tmpl",
+	// 	"./ui/html/pages/home.tmpl",
+	// }
+
+	// // Use the template.ParseFiles() function to read the template file into
+	// // a template set. If there's an error, we log the detailed error messages
+	// // and use the http.Error() function to send a generic 500 Internal Server
+	// // Error response to the user
+	// ts, err := template.ParseFiles(files...)
+	// if err != nil {
+	// 	app.serverError(w, err)
+	// 	http.Error(w, "Internal Server Error", 500)
+	// 	return
+	// }
+
+	// // We then use the Execure() method on the template set to write the
+	// // template content as the response body. The last parameter to Execute()
+	// // represent any dynamic data we want to pass in, which is now we'll leave as nil.
+	// err = ts.ExecuteTemplate(w, "base", nil)
+	// if err != nil {
+	// 	app.serverError(w, err)
+	// }
 }
 
 func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
