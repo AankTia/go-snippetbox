@@ -593,6 +593,18 @@ It is perfectly acceptable (and common) to ignore the `sql.Result` return value 
 _, err := m.DB.Exect("INSERT INTO ..." ...)
 ```
 
+### Plaveholder parameters
+
+Construct our SQL statement using placeholder parameters, where `?` acted as a placeholder for the data we want to insert.
+
+The reason for using placeholder parameters to construct our query (rather than string interpolation) is to help avoid SQL injevtion attack form any untrusted user-provided input.
+
+The placeholder parameter syntax differs depending on your database. MySQL, SQL Server and SQLite use the `?` notation, but PostgreSQL uses the `$N` notation. For example, if you were using PostgreSQL instead you would write:
+
+```go
+_, err := m.DB.Exec("INSERT INTO ... VALUES ($1, $2, $3)", ...)
+```
+
 ## 4.7. Single-record SQL queries
 
 ## 4.8. Multiple-record SQL queries
