@@ -867,6 +867,8 @@ Within a `{{range}}` action you can use the `{{break}}` command to end the loop 
 
 ## 5.3. Caching templates
 
+...
+
 ## 5.4. Catching runtime errors
 
 ## 5.5. Common dynamic data
