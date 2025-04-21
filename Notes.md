@@ -649,8 +649,13 @@ In contrast, the `errors.Is()` function works by _unwrapping_ errors as necessar
 
 ...
 
-
 ## 4.9. Transactions and other details
+
+### The `database/sql` package
+
+The `dataase/sql` package essentially provides a standard interface between your Go application and the world of SQL database.
+
+So long as you use the `database/sql` package, the Go code you write will generally be portable and work with any kind of SQL database -- whether it's MySQL, PostreSQL, SQLite or something else. This means that your application isn't tighly coupled to the database that you're currently using, and the theory is that you can swap databases in the future without re-writing all of your code (driver-specific quirks and SQL implementations aside).
 
 ---
 
