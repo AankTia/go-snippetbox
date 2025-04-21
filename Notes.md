@@ -791,7 +791,16 @@ func main() {
 
 Within your HTML templates, any dynamic data that you pass in is represented by the `.` character (reffered to as _dot_).
 
-### Rendering multiple pieces of data
+### Nested templates
+
+When you're invoking one template from another template, dot neds to be explicity passed or _pipelined_ to the template being invoked. You do this by including it at the end of each `{{template}}` or `{{block}}` action, like so:
+
+```go
+{{template "main" .}}
+{{block "sidebar" .}}{{end}}
+```
+
+As a general rule, my advice is to get into the habit of always pipeliningdot whenever you invoke a template with the `{{template}}` or `{{block}}` actions, unless you have a good reason not to.
 
 ...
 
