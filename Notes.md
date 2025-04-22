@@ -903,6 +903,10 @@ A nince feature of pipelining is that you can make an arbitrarily long chain of 
 
 # 6. Middleware
 
+When you're building a web application there's probably some shared functionality that you want to use for many (or even all) HTTP requests. For example, you might want to log every request, compress every response, or check a cache before passing to request to your handlers.
+
+A common way of organizing this shared functionality is to set it up as _middleware_. This is essentially some self-contained code which independently acts on a request before of after your normal application handlers.
+
 ## 6.1. How middleware works
 
 ## 6.2. Setting security headers
