@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"runtime/debug"
+	"time"
 )
 
 // The serverError helper writes an error message and stck trace to the errorLog,
@@ -54,4 +55,11 @@ func (app *application) render(w http.ResponseWriter, status int, page string, d
 
 	// Write the contents of the buffer to the http.ResponseWriter.
 	buf.WriteTo(w)
+}
+
+// newTemplateData(), which returns a pointer to a templateData struct initialized with current year.
+func (app *application) newTemplateData(r *http.Request) *templateData {
+	return &templateData{
+		CurrentYear: time.Now().Year(),
+	}
 }
