@@ -879,6 +879,26 @@ Within a `{{range}}` action you can use the `{{break}}` command to end the loop 
 
 ## 5.6. Custom template functions
 
+#### Pipelining
+
+We calles our custiom template function like this:
+
+```go
+<time>Created: {{humanDate .Created}}</time>
+```
+
+An altervative approach is to use the `|` character to `pipeline` values to a function. This works a bbit like pipelining outputs from one command to another in Unix terminals.
+
+``bash
+<time>Created: {{.Created | humanDate}}</time>
+```
+
+A nince feature of pipelining is that you can make an arbitrarily long chain of template functions whish use the output from one as the input for the next. For example, we could pipelining the output from our `humanDate` function to the inbuilt `printf` function like so:
+
+``bash
+<time>Created: {{.Created | humanDate | printf "Created: %s"}}</time>
+```
+
 ---
 
 # 6. Middleware
